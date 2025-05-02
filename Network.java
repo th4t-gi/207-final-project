@@ -32,9 +32,9 @@ public class Network {
         networkArray.sort((PairA, PairB) -> {return PairA.getFirst() - PairB.getFirst(); });
     }
 
-    public void printNetwork(){
+    public void printNetwork(String fileName){
         try{
-            PrintWriter out = new PrintWriter("networks.txt", StandardCharsets.UTF_8);
+            PrintWriter out = new PrintWriter(fileName, StandardCharsets.UTF_8);
             StringBuilder sb = new StringBuilder();
             for(Pair<Integer> connection : networkArray) {
                 sb.append(connection.getFirst() + " " + connection.getSecond() + "\n");

@@ -3,7 +3,7 @@ import java.util.*;
 
 
 
-public class FinalAILabPartI {
+public class FinalProjectPartI {
     // network class --> builds object
     // each network has a list of nodes and a list of connections
     // network stores an array of pairs
@@ -51,7 +51,7 @@ public class FinalAILabPartI {
             new Pair(9,12)));
 
         Network network1 = new Network(12, arr1);
-        network1.printNetwork();
+        network1.printNetwork("network1.txt");
     }
 
     public static void optionTwo(){
@@ -82,7 +82,7 @@ public class FinalAILabPartI {
         }
 
         Network network2 = new Network(nodes, arr2);
-        network2.printNetwork();
+        network2.printNetwork("network2.txt");
     }
 
     public static void optionThree(){
@@ -122,7 +122,7 @@ public class FinalAILabPartI {
         }
 
         Network network3 = new Network(nodes, connectionsArr);
-        network3.printNetwork();
+        network3.printNetwork("network3.txt");
 
     }
 
