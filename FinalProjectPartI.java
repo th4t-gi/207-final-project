@@ -39,7 +39,7 @@ public class FinalProjectPartI {
     }
 
     public static void optionOne(){
-        ArrayList<Pair<Integer>> arr1 = new ArrayList(Arrays.asList(new Pair(1, 4),
+        ArrayList<Pair<Integer>> arr1 = new ArrayList(Arrays.asList(new Pair<Integer>(1, 4),
             new Pair(1,7),
             new Pair(1,10),
             new Pair(2,7),
@@ -69,13 +69,13 @@ public class FinalProjectPartI {
             probability = sc.nextDouble();
         }
 
-        ArrayList<Pair<Integer>> arr2 = new ArrayList();
+        ArrayList<Pair<Integer>> arr2 = new ArrayList<>();
         for (int i = 1; i <= nodes; i++) {
             for (int j = i+1; j <= nodes; j++) {
                 double r = random.nextDouble(0, 1);
 
                 if (r > probability) {
-                    Pair newConnection = new Pair(i,j);
+                    Pair<Integer> newConnection = new Pair<>(i,j);
                     arr2.add(newConnection);
                 }
             }
@@ -109,15 +109,15 @@ public class FinalProjectPartI {
             int col = ((node - 1) % width) + 1;
 
             if (row < height) {
-                connectionsArr.add(new Pair(node, node+width));
+                connectionsArr.add(new Pair<>(node, node+width));
             } else {
-                connectionsArr.add(new Pair(node, col));
+                connectionsArr.add(new Pair<>(node, col));
             }
             
             if (col < width) {
-                connectionsArr.add(new Pair(node, node+1));
+                connectionsArr.add(new Pair<>(node, node+1));
             }  else {
-                connectionsArr.add(new Pair(node, node-col+1));
+                connectionsArr.add(new Pair<>(node, node-col+1));
             }
         }
 
