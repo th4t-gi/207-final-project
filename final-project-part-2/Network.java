@@ -26,7 +26,7 @@ public class Network<T> {
         this.networkMap.get(node2).add(node1);
     }
 
-    public void removeConnection(T node){
+    public void removeConnectionsOf(T node){
         for (T n : this.networkMap.get(node)) {
             this.networkMap.get(n).remove(node);
         }

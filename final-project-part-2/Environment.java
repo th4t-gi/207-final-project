@@ -4,7 +4,7 @@ import java.util.Random;
 public class Environment {
     private double p;
     private int b;
-    private double t;
+    private Threshold threshold;
     private boolean relativeToK;
     private double m;
 
@@ -14,13 +14,13 @@ public class Environment {
 
     private boolean gameOver;
     
-    public Environment(Agent[] agents, Network<Agent> network, double p, int b, int h, double t,
+    public Environment(Agent[] agents, Network<Agent> network, double p, int b, int h, Threshold t,
      boolean relativeToK, double m) {
         this.network = network;
         this.agents = agents;
         this.p = p;
         this.b = b;
-        this.t = t;
+        this.threshold = t;
         this.relativeToK = relativeToK;
         this.m = m;
         
@@ -74,14 +74,8 @@ public class Environment {
         //eliminate agents
         for (Agent a : this.agents) {
             //TODO: If an agent is eliminated, gameover = false
-            if(relativeToK) {
-                if (a.getReinforcement() < t/a.getKValue()) {
-                    this.network.removeConnection(a);
-                }
-            } else {
-                if(a.getReinforcement() < t) {
-                    this.network.removeConnection(a);
-                }
+            if (a.getReinforcement() < this.threshold.t(a)) {
+                this.network.removeConnectionsOf(a);
             }
 
             //TODO: If an agent switches strategy gameover = false
@@ -114,3 +108,7 @@ public class Environment {
 
     }
 }
+
+interface Threshold {
+    double t(Agent a);
+} 
