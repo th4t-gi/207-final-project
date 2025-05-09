@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -15,13 +16,13 @@ public class Environment {
     private int numRounds;
     private int roundsSteady;
 
-    private Agent[] agents;
+    private LinkedList<Agent> agents;
     private Network<Agent> network;
     private Random random = new Random(System.currentTimeMillis());
 
     private boolean gameOver;
     
-    public Environment(Agent[] agents, Network<Agent> network, int b, int h, double t,
+    public Environment(LinkedList<Agent> agents, Network<Agent> network, int b, int h, double t,
      boolean relativeToK, double m) {
         this.network = network;
         this.agents = agents;
@@ -30,30 +31,37 @@ public class Environment {
         this.t = t;
         this.relativeToK = relativeToK;
         this.m = m;
-        this.startNumAgents = agents.length; 
-        this.endNumAgents = agents.length;
+        this.startNumAgents = agents.size(); 
+        this.endNumAgents = agents.size();
         this.numRounds = 0;
         this.roundsSteady = 0;
+
+        this.network.removeEmpty();
 
         //make agents
         
 
         //set the k values for all of the agents
-        agents[h].setStrategy(false);
-        for (Agent a : this.agents) {
-            a.setKValue((network.getNetworkMap().get(a)).size());
+        this.agents.get(h).setStrategy(false);
+        for (Agent key : this.network.getNetworkMap().keySet()) {
+            // System.out.println(a.getId());
+            if (this.network.getNetworkMap().get(key) != null) {
+                key.setKValue((network.getNetworkMap().get(key)).size());
+            } 
         }
     }
 
     public void runGame(){
         this.gameOver = false;
-        while(!gameOver) {
+        while(!gameOver && this.endNumAgents > 0) {
             gameOver = true;
             runRound();
             this.numRounds += 1;
+            System.out.println("I did a round! " + this.numRounds);
+
             if (gameOver == true) { 
                 this.roundsSteady = 1;
-                for(Agent a : this.agents) {
+                for(Agent a : this.network.getNetworkMap().keySet()) {
                     LinkedList<Agent> neighbors = network.getNetworkMap().get(a);
     
                     for(Agent n : neighbors) {
@@ -72,41 +80,49 @@ public class Environment {
 
     public void runRound() {
 
-        for (Agent a : this.agents) {
+        for (Agent a : this.network.getNetworkMap().keySet()) {
             LinkedList<Agent> neighbors = network.getNetworkMap().get(a);
 
-            for (Agent n : neighbors) {
-                if (n.getId() > a.getId()) {
-                    if (n.getStrategy() && a.getStrategy()) {
-                        //cooperate
-                        a.addReinforcement(1);
-                        n.addReinforcement(1);
-                    } else {
-                        if (!n.getStrategy()) {
-                            //n is defective
-                            n.addReinforcement(this.b);
-                        } else if (!a.getStrategy()) {
-                            //a is defective
-                            a.addReinforcement(this.b);
-                        }
-                    } 
+            if (neighbors != null) {
+                for (Agent n : neighbors) {
+                    if (n.getId() > a.getId()) {
+                        if (n.getStrategy() && a.getStrategy()) {
+                            //cooperate
+                            a.addReinforcement(1);
+                            n.addReinforcement(1);
+                        } else {
+                            if (!n.getStrategy()) {
+                                //n is defective
+                                n.addReinforcement(this.b);
+                            } else if (!a.getStrategy()) {
+                                //a is defective
+                                a.addReinforcement(this.b);
+                            }
+                        } 
+                    }
                 }
             }
         }
 
+        ArrayList<Integer> elim = new ArrayList<>();
         //eliminate agents
-        for (Agent a : this.agents) {
+        for (Agent a : this.network.getNetworkMap().keySet()) {
             if(relativeToK) {
                 if (a.getReinforcement() < t/a.getKValue()) {
                     this.network.removeConnection(a);
                     this.gameOver = false;
                     this.endNumAgents -= 1;
+                    elim.add(a.getId());
+                    System.out.println("I kill a agent!" + this.endNumAgents);
+                    System.out.println("Agent ID: " + a.getId());
                 }
             } else {
                 if(a.getReinforcement() < t) {
                     this.network.removeConnection(a);
                     this.gameOver = false;
                     this.endNumAgents -= 1;
+                    elim.add(a.getId());
+                    System.out.println("I killed an agent!" + this.endNumAgents);
                 }
             }
 
@@ -131,10 +147,14 @@ public class Environment {
                 }
             }
         }
+
+        for (int id : elim) {
+            this.agents.remove(id);
+        }
     }
 
     public Agent getMaxKId(){
-        Agent maxId = agents[0];
+        Agent maxId = agents.get(0);
         for(Agent a: agents) {
             if (a.getKValue() > maxId.getKValue()){
                 maxId = a;
@@ -144,7 +164,7 @@ public class Environment {
     }
 
     public Agent getMinKId(){
-        Agent minId = agents[0];
+        Agent minId = agents.get(0);
         for(Agent a: agents) {
             if (a.getKValue() < minId.getKValue()){
                 minId = a;

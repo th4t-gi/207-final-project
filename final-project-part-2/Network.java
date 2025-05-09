@@ -25,13 +25,19 @@ public class Network<T> {
         }
     }
 
+    public void initNode(T node) {
+        this.networkMap.put(node, new LinkedList<>());
+    }
+
+    public void removeEmpty(){
+        for(T key: networkMap.keySet()) {
+            if(networkMap.get(key).isEmpty()){
+                networkMap.remove(key);
+            }
+        }
+    }
+
     public void addConnection(T node1, T node2) {
-        if (this.networkMap.get(node1) == null) {
-            this.networkMap.put(node1, new LinkedList<>());
-        }
-        if (this.networkMap.get(node2) == null) {
-            this.networkMap.put(node2, new LinkedList<>());
-        }
         this.networkMap.get(node1).add(node2);
         this.networkMap.get(node2).add(node1);
     }

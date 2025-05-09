@@ -14,23 +14,23 @@ public class FinalProjectPartII {
         //TODO Ensure that option is between 1 and 17
 
         String[] networkNames = {
-                "network1.txt",
-                "network-1000-15.txt",
-                "network-1000-15.txt",
-                "network-1000-5.txt",
-                "network-1000-6.txt",
-                "network-1500-3.txt",
-                "network-1500-3.txt",
-                "network-1500-9.txt",
-                "network3.txt",
-                "network3.txt",
-                "network3.txt",
-                "network3.txt",
-                "network3.txt",
-                "network3.txt",
-                "network3.txt",
-                "network3.txt",
-                "network-1000-15.txt"
+            "network1.txt",
+            "network-1000-15.txt",
+            "network-1000-15.txt",
+            "network-1000-5.txt",
+            "network-1000-6.txt",
+            "network-1500-3.txt",
+            "network-1500-3.txt",
+            "network-1500-9.txt",
+            "network3.txt",
+            "network3.txt",
+            "network3.txt",
+            "network3.txt",
+            "network3.txt",
+            "network3.txt",
+            "network3.txt",
+            "network3.txt",
+            "network-1000-15.txt"
         };
 
         String[] outputNames = {
@@ -54,7 +54,7 @@ public class FinalProjectPartII {
         };
 
         Object[][] parameters = {
-            {2, 0, 1.0, true, 0.5},//1
+            {2, 0, 1.0, true, 0.05},//1
             {2, 500, 1.0, true, 0.1},//2
             {2, 500, 1.0, true, 0.9},//3
             {2, 500, 1.0, true, 0.6},//4
@@ -91,26 +91,58 @@ public class FinalProjectPartII {
 
                 if (node2 != -1) {
                     connections.add(new Pair<>(node1-1, node2-1));
-                }
+                } 
             }
         } catch (Exception e) {
             System.out.println(e);
         }
 
-        Agent[] agents = new Agent[numNodes];
-        for (int i = 0; i < numNodes; i++) {
-            agents[i] = new Agent(i, 0);
-        }
-
         Network<Agent> network = new Network<>();
 
+        LinkedList<Agent> agents = new LinkedList<>();
+        for (int i = 0; i < numNodes; i++) {
+            agents.add(new Agent(i, 0));
+            network.initNode(agents.get(i));
+        }
+
         for (Pair<Integer> connection : connections) {
-            System.out.println(connection);
-            network.addConnection(agents[connection.getFirst()], agents[connection.getSecond()]);
+            // System.out.println(connection);
+            network.addConnection(agents.get(connection.getFirst()), agents.get(connection.getSecond()));
         }
 
         if (option == 15 || option == 16) {
             //TODO Get user input and create environment
+            System.out.println("Please enter a value for b:");
+            int b = sc.nextInt();
+
+            System.out.println("Please enter a value for h:");
+            int h = sc.nextInt();
+
+            while (h < 0 || h > numNodes) {
+                System.out.println("Please enter a valid h (between 0 and " + numNodes + "):");
+                h = sc.nextInt();
+            }
+
+            System.out.println("Please enter a value for T:");
+            double T = sc.nextDouble();
+
+            while (T < 0 || T > 1) {
+                System.out.println("Please enter a valid T (between 0 and 1):");
+                T = sc.nextInt();
+            }
+
+            System.out.println("Please enter a value for m:");
+            double m = sc.nextDouble();
+
+            while (m < 0 || m > 1) {
+                System.out.println("Please enter a valid m (between 0 and 1):");
+                m = sc.nextInt();
+            }
+
+            Environment env = new Environment(agents, network, b, h, T, false, m);
+            env.runGame();
+            env.print(outputNames[option]);
+
         } else {
             Environment env = new Environment(
                 agents, 
@@ -122,7 +154,7 @@ public class FinalProjectPartII {
                 (double) parameters[option][4]);
 
             env.runGame();
-            env.print("game1-output.txt");
+            env.print(outputNames[option]);
         }
 
     }
