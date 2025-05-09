@@ -3,54 +3,51 @@ import java.util.*;
 
 // import java.util.ArrayList;
 
-public class Network<T> {
+public class Network<T> extends HashMap<T, LinkedList<T>> {
     // network class --> builds object
     // each network has a list of nodes and a list of connections
     // network stores an array of pairs
     // number of nodes
     // new Network(nodeNumber, connnectionsArray)
     // new Network(10, generateArray(10))
-    private Map<T, LinkedList<T>> networkMap;
+    // private Map<T, LinkedList<T>> networkMap;
 
     public Network() {
-        networkMap = new HashMap<>();
+        super();
     }
 
-    public Network(ArrayList<Pair<T>> connectionsArray) {
+    public Network(ArrayList<T[]> connectionsArray) {
+        super();
 
-        networkMap = new HashMap<>();
-
-        for (Pair<T> connection : connectionsArray) {
-            this.addConnection(connection.getFirst(), connection.getSecond());
+        for (T[] connection : connectionsArray) {
+            this.addConnection(connection[0], connection[0]);
         }
     }
 
     public void initNode(T node) {
-        this.networkMap.put(node, new LinkedList<>());
+        this.put(node, new LinkedList<>());
     }
 
     public void removeEmpty(){
-        for(T key: networkMap.keySet()) {
-            if(networkMap.get(key).isEmpty()){
-                networkMap.remove(key);
+        Set<T> keys = this.keySet();
+
+        for(T key : keys) {
+            if(this.get(key).isEmpty()){
+                this.remove(key);
             }
         }
     }
 
     public void addConnection(T node1, T node2) {
-        this.networkMap.get(node1).add(node2);
-        this.networkMap.get(node2).add(node1);
+        this.get(node1).add(node2);
+        this.get(node2).add(node1);
     }
 
-    public void removeConnection(T node){
-        for (T n : this.networkMap.get(node)) {
-            this.networkMap.get(n).remove(node);
+    public void removeConnectionsOf(T node){
+        for (T n : this.get(node)) {
+            this.get(n).remove(node);
         }
-        this.networkMap.get(node).clear();
-    }
-
-    public Map<T, LinkedList<T>> getNetworkMap() {
-        return this.networkMap;
+        this.get(node).clear();
     }
 
 }
