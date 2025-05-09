@@ -53,22 +53,31 @@ public class FinalProjectPartII {
             "game17-output.txt",
         };
 
+        Threshold t1 = (Agent a) -> 1.0/a.getKValue();
+        Threshold t2 = (Agent a) -> 2.0/a.getKValue();
+        Threshold t02 = (Agent a) -> 0.2;
+        Threshold t05 = (Agent a) -> 0.5;
+        Threshold t75 = (Agent a) -> 0.75;
+        Threshold t04 = (Agent a) -> 0.4;
+        Threshold t25 = (Agent a) -> 0.25;
+
+
         Object[][] parameters = {
-            {2, 0, 1.0, true, 0.05},//1
-            {2, 500, 1.0, true, 0.1},//2
-            {2, 500, 1.0, true, 0.9},//3
-            {2, 500, 1.0, true, 0.6},//4
-            {2, 500, 1.0, true, 0.6},//5
-            {2, 700, 1.0, true, 0.3},//6
-            {2, 700, 2.0, true, 0.3},//7
-            {2, 700, 2.0, true, 0.3},//8
-            {2, 500, 0.2, false, 0.1},//9
-            {2, 500, 0.5, false, 0.1},//10
-            {2, 500, 0.75, false, 0.1},//11
-            {3, 500, 0.2, false, 0.1},//12
-            {3, 500, 0.4, false, 0.5},//13
-            {1, 500, 0.75, false, 0.9},//14
-            {1, 500, 0.25, false, 0.9},//15
+            {2, 0, t1, 0.05},//1
+            {2, 500, t1, 0.1},//2
+            {2, 500, t1, 0.9},//3
+            {2, 500, t1, 0.6},//4
+            {2, 500, t1, 0.6},//5
+            {2, 700, t1, 0.3},//6
+            {2, 700, t2, 0.3},//7
+            {2, 700, t2, 0.3},//8
+            {2, 500, t02, 0.1},//9
+            {2, 500, t05, 0.1},//10
+            {2, 500, t75, 0.1},//11
+            {3, 500, t02, 0.1},//12
+            {3, 500, t04, 0.5},//13
+            {1, 500, t75, 0.9},//14
+            {1, 500, t25, 0.9},//15
             {},//16
             {}//17
         };
@@ -124,12 +133,14 @@ public class FinalProjectPartII {
             }
 
             System.out.println("Please enter a value for T:");
-            double T = sc.nextDouble();
+            double t = sc.nextDouble();
 
-            while (T < 0 || T > 1) {
+            while (t < 0 || t > 1) {
                 System.out.println("Please enter a valid T (between 0 and 1):");
-                T = sc.nextInt();
+                t = sc.nextInt();
             }
+
+            final double finalT = t;
 
             System.out.println("Please enter a value for m:");
             double m = sc.nextDouble();
@@ -139,7 +150,7 @@ public class FinalProjectPartII {
                 m = sc.nextInt();
             }
 
-            Environment env = new Environment(agents, network, b, h, T, false, m);
+            Environment env = new Environment(agents, network, b, h, (Agent a) -> finalT, m);
             env.runGame();
             env.print(outputNames[option]);
 
@@ -149,8 +160,7 @@ public class FinalProjectPartII {
                 network, 
                 (int) parameters[option][0],
                 (int) parameters[option][1],
-                (double) parameters[option][2],
-                (boolean) parameters[option][3],
+                (Threshold) parameters[option][2],
                 (double) parameters[option][4]);
 
             env.runGame();

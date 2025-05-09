@@ -8,7 +8,7 @@ import java.util.Random;
 public class Environment {
     private int b;
     private int h;
-    private double t;
+    private Threshold t;
     private boolean relativeToK;
     private double m;
     private int startNumAgents;
@@ -22,8 +22,7 @@ public class Environment {
 
     private boolean gameOver;
     
-    public Environment(LinkedList<Agent> agents, Network<Agent> network, int b, int h, double t,
-     boolean relativeToK, double m) {
+    public Environment(LinkedList<Agent> agents, Network<Agent> network, int b, int h, Threshold t, double m) {
         this.network = network;
         this.agents = agents;
         this.b = b;
@@ -107,23 +106,13 @@ public class Environment {
         ArrayList<Integer> elim = new ArrayList<>();
         //eliminate agents
         for (Agent a : this.network.getNetworkMap().keySet()) {
-            if(relativeToK) {
-                if (a.getReinforcement() < t/a.getKValue()) {
-                    this.network.removeConnection(a);
-                    this.gameOver = false;
-                    this.endNumAgents -= 1;
-                    elim.add(a.getId());
-                    System.out.println("I kill a agent!" + this.endNumAgents);
-                    System.out.println("Agent ID: " + a.getId());
-                }
-            } else {
-                if(a.getReinforcement() < t) {
-                    this.network.removeConnection(a);
-                    this.gameOver = false;
-                    this.endNumAgents -= 1;
-                    elim.add(a.getId());
-                    System.out.println("I killed an agent!" + this.endNumAgents);
-                }
+            if (a.getReinforcement() < this.t.t(a)) {
+                this.network.removeConnection(a);
+                this.gameOver = false;
+                this.endNumAgents -= 1;
+                elim.add(a.getId());
+                System.out.println("I kill a agent!" + this.endNumAgents);
+                System.out.println("Agent ID: " + a.getId());
             }
 
             //imitation
@@ -238,3 +227,8 @@ public class Environment {
         
     }
 }
+
+
+interface Threshold {
+    double t(Agent a);
+} 
