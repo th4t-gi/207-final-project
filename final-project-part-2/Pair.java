@@ -16,7 +16,7 @@ public class Pair<T> {
         return p2;
     }
 
-    boolean isEqual(Pair other) {
+    boolean isEqual(Pair<T> other) {
         if(other.getFirst() == this.getSecond() &&
         other.getSecond() == this.getFirst()) {
             return true;

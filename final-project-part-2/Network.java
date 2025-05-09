@@ -12,7 +12,11 @@ public class Network<T> {
     // new Network(10, generateArray(10))
     private Map<T, LinkedList<T>> networkMap;
 
-    public Network(int n, ArrayList<Pair<T>> connectionsArray) {
+    public Network() {
+        networkMap = new HashMap<>();
+    }
+
+    public Network(ArrayList<Pair<T>> connectionsArray) {
 
         networkMap = new HashMap<>();
 
@@ -22,6 +26,12 @@ public class Network<T> {
     }
 
     public void addConnection(T node1, T node2) {
+        if (this.networkMap.get(node1) == null) {
+            this.networkMap.put(node1, new LinkedList<>());
+        }
+        if (this.networkMap.get(node2) == null) {
+            this.networkMap.put(node2, new LinkedList<>());
+        }
         this.networkMap.get(node1).add(node2);
         this.networkMap.get(node2).add(node1);
     }
