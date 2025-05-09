@@ -82,7 +82,7 @@ public class FinalProjectPartII {
             {}//17
         };
 
-        ArrayList<Pair<Integer>> connections = new ArrayList<>();
+        ArrayList<int[]> connections = new ArrayList<>();
         int numNodes = 0;
 
         // process text file
@@ -97,26 +97,13 @@ public class FinalProjectPartII {
                 } else if (node2 > numNodes) {
                     numNodes = node2;
                 }
-
                 if (node2 != -1) {
-                    connections.add(new Pair<>(node1-1, node2-1));
+                    int[] pair = {node1-1, node2-1};
+                    connections.add(pair);
                 } 
             }
         } catch (Exception e) {
             System.out.println(e);
-        }
-
-        Network<Agent> network = new Network<>();
-
-        LinkedList<Agent> agents = new LinkedList<>();
-        for (int i = 0; i < numNodes; i++) {
-            agents.add(new Agent(i, 0));
-            network.initNode(agents.get(i));
-        }
-
-        for (Pair<Integer> connection : connections) {
-            // System.out.println(connection);
-            network.addConnection(agents.get(connection.getFirst()), agents.get(connection.getSecond()));
         }
 
         if (option == 15 || option == 16) {
@@ -150,18 +137,18 @@ public class FinalProjectPartII {
                 m = sc.nextInt();
             }
 
-            Environment env = new Environment(agents, network, b, h, (Agent a) -> finalT, m);
+            Environment env = new Environment(numNodes, connections, b, h, (Agent a) -> finalT, m);
             env.runGame();
             env.print(outputNames[option]);
 
         } else {
             Environment env = new Environment(
-                agents, 
-                network, 
+                numNodes, 
+                connections, 
                 (int) parameters[option][0],
                 (int) parameters[option][1],
                 (Threshold) parameters[option][2],
-                (double) parameters[option][4]);
+                (double) parameters[option][3]);
 
             env.runGame();
             env.print(outputNames[option]);

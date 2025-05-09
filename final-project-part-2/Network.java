@@ -28,16 +28,6 @@ public class Network<T> extends HashMap<T, LinkedList<T>> {
         this.put(node, new LinkedList<>());
     }
 
-    public void removeEmpty(){
-        Set<T> keys = this.keySet();
-
-        for(T key : keys) {
-            if(this.get(key).isEmpty()){
-                this.remove(key);
-            }
-        }
-    }
-
     public void addConnection(T node1, T node2) {
         this.get(node1).add(node2);
         this.get(node2).add(node1);
