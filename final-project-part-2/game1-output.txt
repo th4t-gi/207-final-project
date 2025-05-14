@@ -1,13 +1,8 @@
-Percentage of Eliminated Agents: 0.0*Vertices 10
-4"4"
-8"8"
-11"11"
-7"7"
-10"10"
-6"6"
-0"0"
-1"1"
+Percentage of Eliminated Agents: 0.0*Vertices 5
 9"9"
 3"3"
-*Edges 20
-7917191916116736979119161737
+6"6"
+0"0"
+4"4"
+*Edges 8
+93763697

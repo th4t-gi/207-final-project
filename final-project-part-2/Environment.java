@@ -3,6 +3,7 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Map.Entry;
 import java.util.Random;
 
 public class Environment {
@@ -59,12 +60,15 @@ public class Environment {
     }
 
     public void runGame(){
-        while(!gameOver && this.numAgents > 0 && this.numRounds < 100) {
-            runRound();
+        while(!gameOver && this.numAgents > 0 && this.numRounds < 1000) {
             this.numRounds += 1;
-            System.out.println("I did a round! " + this.numRounds);
-            
+            // System.out.println("Current Round: " + this.numRounds);
+            runRound();
+            // System.out.println("checkIsStable: " + this.roundsSteady);
 
+            for(Agent a : this.network.keySet()) {
+                a.setReinforcement(0);
+            }
         }
     }
 
@@ -85,8 +89,9 @@ public class Environment {
 
     public void runRound() {
 
-        for (Agent a : this.network.keySet()) {
-            for (Agent n : this.network.get(a)) {
+        for (Entry<Agent, LinkedList<Agent>> entry : this.network.entrySet()) {
+            for (Agent n : entry.getValue()) {
+                Agent a = entry.getKey();
                 if (n.getId() > a.getId()) {
                     if (n.getStrategy() && a.getStrategy()) {
                         //cooperate
@@ -106,15 +111,30 @@ public class Environment {
         }
 
         //eliminate agents
+        ArrayList<Agent> agentsToRemove = new ArrayList<>();
         for (Agent a : this.network.keySet()) {
+            // System.out.println("Agent reinforcement: " + a.getReinforcement() + ", Threshold:" + this.t.t(a));
             if (a.getReinforcement() < this.t.t(a)) {
-                this.network.remove(a);
+                System.out.println("\nROUND: " + this.numRounds);
+                agentsToRemove.add(a);
                 this.gameOver = false;
-                System.out.println("I kill a agent!" + this.network.keySet().size());
-                System.out.println("Agent ID: " + a.getId());
+                System.out.println("I kill agent!: " + a);
+                System.out.println("Threshold: " + this.t.t(a));
             }
+        }
 
-            //imitation
+        // Remove agents
+        for (Agent a : agentsToRemove) {
+            this.network.removeNode(a);
+        }
+
+        if (agentsToRemove.size() > 0) {
+            System.out.println("\nAgents left: " + this.network.size());
+            System.out.println("\nAgents:" + this.network);
+        }
+
+        //imitation
+        for (Agent a : this.network.keySet()) {
             if (random.nextDouble(1) < this.m) {
                 LinkedList<Agent> neighbors = network.get(a);
 
@@ -182,6 +202,8 @@ public class Environment {
     }
 
     public void print(String filename) {
+        System.out.println("The number of rounds played is: " + this.numRounds);
+        System.out.println("The number of agents left is: " + this.network.size());
         System.out.println("The initial number of agents is: " + this.numAgents);
         System.out.println("The ID of the agent with the largest k is " + getMaxKId().getId() + ".");
         System.out.println("Its k value is " + getMaxKId().getKValue() + ".");
@@ -189,8 +211,13 @@ public class Environment {
         System.out.println("Its k value is " + getMinKId().getKValue() + ".");
 
         System.out.println("The parameters used were:");
-        System.out.println(this.numAgents + " agents, " + "b = " + this.b + ", h = " + this.h +
-        ", T = " + this.t + ", m = " + this.m + ".");
+        double t1 = this.t.t(new Agent(-1, 1));
+        double t2 = this.t.t(new Agent(-1, 2));
+        System.out.println(this.numAgents + " agents, " +
+            "b = " + this.b +
+            ", h = " + this.h +
+            ", T = " + (t1==t2? t1 : t1 + "/k") +
+            ", m = " + this.m + ".");
 
         try {
             PrintWriter out = new PrintWriter(filename, StandardCharsets.UTF_8);
@@ -226,4 +253,4 @@ public class Environment {
 
 interface Threshold {
     double t(Agent a);
-} 
+}

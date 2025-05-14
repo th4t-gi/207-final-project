@@ -30,12 +30,20 @@ public class Agent {
         this.reinforcement += n/this.k;
     }
 
+    public void setReinforcement(double n) {
+        this.reinforcement = n;
+    }
+
     public void setKValue(int n){
         this.k = n;
     }
 
     public int getKValue(){
         return this.k;
+    }
+
+    public String toString() {
+        return "A" + this.id + " (" + this.strategy + ","+ String.format("%.2f" , this.reinforcement) + ", " + this.k + ")";
     }
 
 

@@ -40,4 +40,21 @@ public class Network<T> extends HashMap<T, LinkedList<T>> {
         this.get(node).clear();
     }
 
+    public void removeNode(T node) {
+        this.removeConnectionsOf(node);
+        super.remove(node);
+    }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<T, LinkedList<T>> entry : this.entrySet()) {
+            sb.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
+        }
+        return sb.toString();
+    }
+
+    // public T[] keyArray() {
+    //     return (T[]) this.keySet().toArray();
+    // }
+
 }
